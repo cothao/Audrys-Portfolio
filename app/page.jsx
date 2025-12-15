@@ -1,7 +1,8 @@
-"use client"
+"use client";
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 export default function Index() {
   const [activeTab, setActiveTab] = useState("recent work");
@@ -13,8 +14,8 @@ export default function Index() {
           <div className="flex flex-col items-center gap-24 w-full">
             <LogoIcon />
             
-            <div  style = {{color: "black"}} className="flex flex-col items-start gap-6 w-full">
-              <h1 className="font-orbit text-2xl tracking-[0.96px] w-full">
+            <div className="flex flex-col items-start gap-6 w-full">
+              <h1 className="text-black font-orbit text-2xl tracking-[0.96px] w-full">
                 ADRIANA–Portfolio
               </h1>
               
@@ -69,18 +70,14 @@ export default function Index() {
                 className="flex flex-col gap-16 w-full"
               >
                 {activeTab === "recent work" && (
-                  <>
-                    <WorkCard />
-                    <WorkCard />
-                    <WorkCard />
-                  </>
+                  <RecentWorkList />
                 )}
                 
                 {activeTab === "case studies" && (
                   <>
-                    <CaseStudyCard />
-                    <CaseStudyCard />
-                    <CaseStudyCard />
+                    <CaseStudyCard id={1} />
+                    <CaseStudyCard id={2} />
+                    <CaseStudyCard id={3} />
                   </>
                 )}
                 
@@ -94,6 +91,35 @@ export default function Index() {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function RecentWorkList() {
+  const [expandedIndex, setExpandedIndex] = useState(0);
+
+  const workItems = [
+    { company: "Company", year: "2024–2025" },
+    { company: "Company", year: "2023–2024" },
+    { company: "Company", year: "2023–2024" },
+    { company: "Company", year: "2023–2024" },
+  ];
+
+  const toggleItem = (index) => {
+    setExpandedIndex(expandedIndex === index ? -1 : index);
+  };
+
+  return (
+    <div className="flex flex-col items-start gap-8 w-full">
+      {workItems.map((item, index) => (
+        <WorkCard
+          key={index}
+          company={item.company}
+          year={item.year}
+          isExpanded={expandedIndex === index}
+          onToggle={() => toggleItem(index)}
+        />
+      ))}
     </div>
   );
 }
@@ -153,79 +179,92 @@ function TabButton({ label, active, onClick }) {
   );
 }
 
-function WorkCard() {
+function WorkCard({ company, year, isExpanded, onToggle }) {
   return (
-    <article className="flex pb-16 flex-col items-start gap-6 w-full border-b border-black/25">
-      <div className="flex justify-between items-start w-full">
+    <motion.article
+      layout
+      className="flex flex-col items-start w-full rounded-2xl border border-black/25 overflow-hidden bg-white"
+      initial={false}
+      transition={{ duration: 0.3 }}
+    >
+      <button
+        onClick={onToggle}
+        className="flex justify-between items-start w-full p-8"
+      >
         <div className="flex items-start gap-2">
-          <div className="flex w-3 h-3 p-4 items-start gap-12 flex-shrink-0 rounded bg-[#E2E2E2]"></div>
+          <div className="flex w-6 h-6 p-12 items-start gap-12 flex-shrink-0 rounded-sm bg-[#E2E2E2]"></div>
           <div className="flex flex-col items-start gap-2 flex-shrink-0">
             <div className="font-inter text-base tracking-[-0.16px] text-black">
-              Company
+              {company}
             </div>
             <div className="font-orbit text-[13px] leading-[100%] tracking-[0.13px] text-black/50">
-              2024–2025
+              {year}
             </div>
           </div>
         </div>
-      </div>
-      
-      <div className="flex flex-col items-start gap-4 w-full">
-        <div className="w-full h-[450px] rounded-2xl bg-[#F4F4F4]"></div>
-        
-        <div className="flex flex-col items-start gap-4 w-full">
-          <p className="text-black/75 font-inter text-base leading-[150%] tracking-[-0.16px] w-full">
-            Centralize communications, create advance AI assistants through chat, and gain actionable insights–all while keeping your data private.
-          </p>
+
+        <div className="flex w-4 h-[18px] flex-col justify-center text-black text-right font-inter text-2xl leading-normal tracking-[-0.24px]">
+          <span className={isExpanded ? 'font-extralight' : 'font-light'}>
+            {isExpanded ? '–' : '+'}
+          </span>
         </div>
-      </div>
-    </article>
+      </button>
+
+      <AnimatePresence initial={false}>
+        {isExpanded && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+            className="flex flex-col items-start gap-4 w-full px-8 pb-16 pt-4"
+          >
+            <div className="w-full h-[450px] rounded-lg bg-[#F4F4F4]"></div>
+
+            <div className="flex flex-col items-start gap-4 w-full">
+              <p className="text-black/75 font-inter text-base leading-[150%] tracking-[-0.16px] w-full">
+                Centralize communications, create advance AI assistants through chat, and gain actionable insights–all while keeping your data private.
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.article>
   );
 }
 
-function CaseStudyCard() {
+function CaseStudyCard({ id = 1 }) {
+  const router = useRouter();
+
   return (
-    <article className="flex w-full pb-16 flex-col justify-center items-start gap-6 border-b border-black/25 bg-white">
+    <article className="flex w-full flex-col justify-center items-start gap-6 p-6 rounded-2xl border border-black/25 bg-white">
       <div className="flex flex-col items-start gap-6 w-full">
-        <h2 style = {{color: "black"}} className="font-inter text-[28px] font-semibold leading-[120%] tracking-[-0.28px] w-full">
+        <h2 className="text-black font-inter text-[28px] font-medium leading-[120%] tracking-[-0.28px] w-full">
           Build an AI powered business  without the complexity
         </h2>
-        
-        <div className="flex flex-col items-start gap-6 w-full">
-          <div className="flex items-start gap-6 flex-wrap">
-            <span className="text-black font-inter text-[21px] font-medium tracking-[-0.206px]">
-              1,000ft
-            </span>
-            <span className="text-black font-inter text-[21px] font-medium tracking-[-0.206px]">
-              7.4 miles
-            </span>
-            <span className="text-black font-inter text-[21px] font-medium tracking-[-0.206px]">
-              3.5 hours
-            </span>
-          </div>
-          
-          <p className="text-black/75 font-inter text-sm leading-[150%] w-full">
-            Centralize communications, create advance AI assistants through chat, and gain actionable insights–all while keeping your data private.Centralize communications, create advance AI assistants through chat, and gain actionable.
-          </p>
-        </div>
       </div>
-      
-      <div className="flex flex-col items-start gap-6 w-full">
+
+      <div className="flex flex-col items-start gap-[27px] w-full">
         <div className="flex h-[255px] justify-between items-center w-full rounded-2xl bg-[#F4F4F4]"></div>
-        
-        <div className="flex items-start gap-6 w-full flex-col sm:flex-row">
-          <div className="flex flex-1 min-w-0 sm:w-auto flex-col items-start gap-2 rounded-2xl bg-[#F4F4F4]">
-            <div className="flex h-[178px] w-full justify-between items-center rounded-2xl"></div>
+
+        <div className="flex items-start gap-[27px] w-full flex-col sm:flex-row">
+          <div className="flex w-full sm:w-[381px] flex-col items-start gap-2 rounded-2xl">
+            <div className="flex h-[178px] w-full justify-between items-center rounded-2xl bg-[#F4F4F4]"></div>
           </div>
-          <div className="flex h-[176px] flex-1 min-w-0 sm:w-auto justify-between items-center rounded-2xl bg-[#F4F4F4]"></div>
+          <div className="flex h-[176px] flex-1 justify-between items-center rounded-2xl bg-[#F4F4F4]"></div>
         </div>
-        
-        <button className="flex py-4 px-5 justify-center items-center gap-1 w-full rounded-lg border border-black/50 hover:bg-black/5 transition-colors">
-          <LockIcon />
-          <span className="text-black text-center font-inter text-sm font-semibold tracking-[0.28px] uppercase">
-            View Details
-          </span>
-        </button>
+
+        <div className="flex items-start gap-4 w-full">
+          <button
+            onClick={() => router.push(`/case-study/${id}`)}
+            className="flex py-4 px-5 justify-center items-center gap-1 flex-1 rounded-lg border border-black/50 hover:bg-black/5 transition-colors"
+          >
+            <LockIcon />
+            <span className="text-black text-center font-inter text-sm font-semibold tracking-[0.28px] uppercase">
+              View Details
+            </span>
+          </button>
+        </div>
       </div>
     </article>
   );
