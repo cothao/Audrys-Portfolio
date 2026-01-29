@@ -1,10 +1,25 @@
-"use client";
+"use client"
 
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 
 export default function CaseStudyDetail() {
-  const router = useRouter();
+  const navigate = useNavigate();
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("theme") === "dark";
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [isDark]);
 
   return (
     <motion.div
@@ -12,142 +27,167 @@ export default function CaseStudyDetail() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
-      className="min-h-screen bg-white py-12 px-4 sm:px-6 lg:px-8"
+      className={`min-h-screen transition-colors duration-300 ${isDark ? "bg-black text-white" : "bg-white text-black"} py-8 sm:py-12 px-4 sm:px-6 lg:px-8`}
     >
-      <div className="max-w-[680px] mx-auto">
-        <div className="flex flex-col items-start gap-16">
-          <div className="flex flex-col items-center gap-24 w-full">
-            <LogoIcon />
-          </div>
-
+      <div className="max-w-[800px] mx-auto">
+        <div className="flex flex-col items-start gap-12 sm:gap-16">
+          {/* Back button */}
           <button
-            onClick={() => router.push("/")}
-            className="w-full text-black font-inter text-2xl font-extralight leading-[120%] hover:opacity-70 transition-opacity text-left"
+            onClick={() => navigate("/")}
+            className={`font-inter text-xl sm:text-2xl font-extralight hover:opacity-70 transition-opacity ${isDark ? "text-white" : "text-black"}`}
           >
             &lt;-
           </button>
 
-          <div className="text-black flex flex-col justify-center items-start gap-6 w-full">
-            <div className="flex flex-col items-start gap-6 w-full">
-              <h1 className="text-black font-inter text-[28px] font-semibold leading-[120%] tracking-[-0.28px] w-full">
-                Build an AI powered business  without the complexity
-              </h1>
+          {/* Tags */}
+          <div className="flex items-center gap-3 flex-wrap">
+            <span className={`font-inter text-sm ${isDark ? "text-white/60" : "text-black/60"}`}>
+              UX/UI Design
+            </span>
+            <span className={`font-inter text-sm ${isDark ? "text-white/60" : "text-black/60"}`}>
+              Email
+            </span>
+            <span className={`font-inter text-sm ${isDark ? "text-white/60" : "text-black/60"}`}>
+              2024
+            </span>
+          </div>
 
-              <div className="flex flex-col items-start gap-5 w-full">
-                <div className="flex items-start gap-[14px] flex-wrap">
-                  <span className="text-black font-inter text-[21px] font-medium tracking-[-0.206px]">
-                    1,000ft
-                  </span>
-                  <span className="text-black font-inter text-[21px] font-medium tracking-[-0.206px]">
-                    7.4 miles
-                  </span>
-                  <span className="text-black font-inter text-[21px] font-medium tracking-[-0.206px]">
-                    3.5 hours
-                  </span>
-                </div>
+          {/* Title */}
+          <h1 className={`font-inter text-3xl sm:text-4xl lg:text-5xl font-bold leading-[120%] ${isDark ? "text-white" : "text-black"}`}>
+            Hobart Product Landing Page Redesign
+          </h1>
 
-                <p className="text-black/75 font-inter text-sm leading-[150%] w-full">
-                  Centralize communications, create advance AI assistants through chat, and gain actionable insights–all while keeping your data private.Centralize communications, create advance AI assistants through chat, and gain actionable.
-                </p>
-              </div>
-            </div>
+          {/* Hero Image */}
+          <div className={`w-full h-[300px] sm:h-[400px] lg:h-[500px] rounded-lg transition-colors ${isDark ? "bg-white/5" : "bg-[#E8E8E8]"}`}></div>
 
-            <div className="flex flex-col items-start gap-4 w-full rounded-lg border border-black/50 p-6">
-              <p className="text-black/75 font-inter text-base leading-[180%] tracking-[-0.16px] w-full">
-                <span className="font-bold text-black">Problem Statement *</span> Centralize communications, create advance AI assistants through chat, and gain actionable insights–all while keeping your data private.
+          {/* Metadata Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 w-full">
+            <MetadataItem 
+              label="Role"
+              value="UX/UI Designer"
+              isDark={isDark}
+            />
+            <MetadataItem 
+              label="Timeline"
+              value="1 Week"
+              isDark={isDark}
+            />
+            <MetadataItem 
+              label="Platform"
+              value="Email"
+              isDark={isDark}
+            />
+            <MetadataItem 
+              label="Tools"
+              value="Figma"
+              isDark={isDark}
+            />
+          </div>
+
+          {/* Overview Section */}
+          <Section
+            eyebrow="OVERVIEW"
+            heading="Overview"
+            content="A product landing page redesign for Hobart focused on improving product clarity, visual hierarchy, and user engagement for a corded wire product."
+            isDark={isDark}
+          />
+
+          {/* The Problem Section */}
+          <Section
+            eyebrow="THE PROBLEM"
+            heading="The challenge: Overcoming an under-leveraged landing page layout"
+            content="The existing landing page had a dated design and confusing layout, which made the product seem less premium and obscured its key features. This led to low user engagement.
+
+The goal was to redesign the page within one week and under a $5,000 budget to improve visual clarity and product presentation, guiding users toward key actions while maintaining the existing brand tone and core content."
+            isDark={isDark}
+          />
+
+          {/* Role Section */}
+          <Section
+            eyebrow="ROLE"
+            heading="My role & collaboration"
+            content="Led the full UX/UI redesign—focusing on layout and hierarchy—and coordinated with graphic designers and project managers to meet all business, timeline, and budget goals."
+            isDark={isDark}
+          />
+
+          {/* Design Process Section */}
+          <div className="flex flex-col gap-6 w-full">
+            <div className="flex flex-col gap-3">
+              <p className={`font-inter text-xs font-semibold tracking-wider uppercase ${isDark ? "text-white/50" : "text-black/50"}`}>
+                RESEARCH & DISCOVERY
               </p>
-            </div>
-
-            <div className="flex h-[626px] justify-between items-center w-full rounded-2xl border border-black/25 bg-[#F4F4F4]"></div>
-
-            <p className="text-black/75 font-inter text-sm leading-[150%] w-full">
-              Centralize communications, create advance AI assistants through chat, and gain actionable insights–all while keeping your data private.Centralize communications.
-            </p>
-
-            <div className="flex items-start gap-[27px] w-full flex-col sm:flex-row">
-              <div className="flex w-full sm:w-[381px] justify-between items-center rounded-2xl border border-black/25 bg-[#F4F4F4] h-[525px]"></div>
-              <div className="flex h-[525px] flex-1 justify-between items-center rounded-2xl border border-black/25 bg-[#F4F4F4]"></div>
-            </div>
-
-            <p className="text-black/75 font-inter text-sm leading-[150%] w-full">
-              Centralize communications, create advance AI assistants through chat, and gain actionable insights–all while keeping your data private.Centralize communications.
-            </p>
-
-            <div className="text-black flex flex-col items-start gap-4 w-full">
-              <h2 className="text-black font-inter text-base font-bold leading-[150%] tracking-[-0.16px] w-full">
-                Tell a Story Through Your User
+              <h2 className={`font-inter text-2xl sm:text-3xl font-bold leading-[130%] ${isDark ? "text-white" : "text-black"}`}>
+                Design process
               </h2>
-              <p className="text-black/75 font-inter text-base leading-[180%] tracking-[-0.16px] w-full">
-                Centralize communications, create advance AI assistants through chat, and gain actionable insights–all while keeping your data private. Centralize communications, create advance AI assistants through chat, and gain actionable insights–all while keeping your data private. Centralize communications, create advance AI assistants through chat, and gain actionable insights–all while keeping your data private.
-              </p>
             </div>
+
+            <div className={`w-full h-[300px] sm:h-[400px] lg:h-[500px] rounded-lg transition-colors ${isDark ? "bg-white/5" : "bg-[#E8E8E8]"}`}></div>
+
+            <p className={`font-inter text-base leading-[160%] ${isDark ? "text-white/75" : "text-black/75"}`}>
+              The design process began by reviewing existing product and competitor pages to understand industrial marketing approaches. The focus was then shifted to creating a simplified layout that prioritized product imagery, key features, and clear calls-to-action.
+            </p>
           </div>
 
-          <div className="flex items-start gap-4 w-full">
-            <button
-              onClick={() => router.push("/")}
-              className="flex py-4 px-5 justify-center items-center gap-1 flex-1 rounded-lg border border-black/50 hover:bg-black/5 transition-colors"
-            >
-              <LockIcon />
-              <span className="text-black text-center font-inter text-sm font-semibold tracking-[0.28px] uppercase">
-                Back to case studies
-              </span>
-            </button>
+          {/* Final Solution Section */}
+          <div className="flex flex-col gap-6 w-full">
+            <div className="flex flex-col gap-3">
+              <p className={`font-inter text-xs font-semibold tracking-wider uppercase ${isDark ? "text-white/50" : "text-black/50"}`}>
+                FINAL SOLUTION
+              </p>
+              <h2 className={`font-inter text-2xl sm:text-3xl font-bold leading-[130%] ${isDark ? "text-white" : "text-black"}`}>
+                The result: A high-impact, conversion-focused landing page
+              </h2>
+            </div>
+
+            <div className={`w-full h-[400px] sm:h-[600px] lg:h-[800px] rounded-lg transition-colors ${isDark ? "bg-white/5" : "bg-[#E8E8E8]"}`}></div>
+
+            <p className={`font-inter text-base leading-[160%] ${isDark ? "text-white/75" : "text-black/75"}`}>
+              The redesign delivered a modern, visually-driven landing page that transforms product presentation. By emphasizing high-quality imagery, clear hierarchy, and strategic call-to-action placement, the new design makes the corded wire's value and key features immediately apparent, guiding users toward key conversion actions.
+            </p>
           </div>
+
+          {/* Back to Case Studies Button */}
+          <button
+            onClick={() => navigate("/")}
+            className={`flex py-4 px-6 justify-center items-center gap-2 w-full rounded-lg transition-colors ${isDark ? "bg-[#2D2D2D] hover:bg-[#3D3D3D] text-white" : "bg-[#2D2D2D] hover:bg-[#1D1D1D] text-white"}`}
+          >
+            <span className="text-center font-inter text-sm font-medium tracking-[0.14px] uppercase">
+              Back to Case Studies
+            </span>
+          </button>
         </div>
       </div>
     </motion.div>
   );
 }
 
-function LogoIcon() {
+function MetadataItem({ label, value, isDark }) {
   return (
-    <svg 
-      width="60" 
-      height="24" 
-      viewBox="0 0 60 24" 
-      fill="none" 
-      xmlns="http://www.w3.org/2000/svg"
-      className="flex justify-center items-start gap-3"
-    >
-      <circle cx="12" cy="12" r="11" stroke="black" strokeOpacity="0.25" strokeWidth="2"/>
-      <path d="M12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3V21Z" fill="black" fillOpacity="0.25"/>
-      <circle cx="48" cy="12" r="11" stroke="black" strokeOpacity="0.9" strokeWidth="2"/>
-      <circle cx="48" cy="12" r="4" fill="black" fillOpacity="0.9"/>
-      <circle cx="48" cy="5" r="2" fill="black" fillOpacity="0.9"/>
-      <circle cx="48" cy="19" r="2" fill="black" fillOpacity="0.9"/>
-      <circle cx="55" cy="12" r="2" fill="black" fillOpacity="0.9"/>
-      <circle cx="41" cy="12" r="2" fill="black" fillOpacity="0.9"/>
-      <circle cx="43" cy="7" r="2" fill="black" fillOpacity="0.9"/>
-      <circle cx="53" cy="7" r="2" fill="black" fillOpacity="0.9"/>
-      <circle cx="53" cy="17" r="2" fill="black" fillOpacity="0.9"/>
-      <circle cx="43" cy="17" r="2" fill="black" fillOpacity="0.9"/>
-    </svg>
+    <div className="flex flex-col gap-2">
+      <p className={`font-inter text-xs font-semibold tracking-wider uppercase ${isDark ? "text-white/50" : "text-black/50"}`}>
+        {label}
+      </p>
+      <p className={`font-inter text-sm font-medium ${isDark ? "text-white" : "text-black"}`}>
+        {value}
+      </p>
+    </div>
   );
 }
 
-function LockIcon() {
+function Section({ eyebrow, heading, content, isDark }) {
   return (
-    <svg 
-      width="19" 
-      height="19" 
-      viewBox="0 0 19 19" 
-      fill="none" 
-      xmlns="http://www.w3.org/2000/svg"
-      className="w-[19px] h-[19px]"
-    >
-      <g clipPath="url(#clip0_lock)">
-        <path 
-          d="M14.2513 6.33073H13.4596V4.7474C13.4596 2.5624 11.6863 0.789062 9.5013 0.789062C7.3163 0.789062 5.54297 2.5624 5.54297 4.7474V6.33073H4.7513C3.88047 6.33073 3.16797 7.04323 3.16797 7.91406V15.8307C3.16797 16.7016 3.88047 17.4141 4.7513 17.4141H14.2513C15.1221 17.4141 15.8346 16.7016 15.8346 15.8307V7.91406C15.8346 7.04323 15.1221 6.33073 14.2513 6.33073ZM7.1263 4.7474C7.1263 3.43323 8.18714 2.3724 9.5013 2.3724C10.8155 2.3724 11.8763 3.43323 11.8763 4.7474V6.33073H7.1263V4.7474ZM13.4596 15.8307H5.54297C5.10755 15.8307 4.7513 15.4745 4.7513 15.0391V8.70573C4.7513 8.27031 5.10755 7.91406 5.54297 7.91406H13.4596C13.8951 7.91406 14.2513 8.27031 14.2513 8.70573V15.0391C14.2513 15.4745 13.8951 15.8307 13.4596 15.8307ZM9.5013 13.4557C10.3721 13.4557 11.0846 12.7432 11.0846 11.8724C11.0846 11.0016 10.3721 10.2891 9.5013 10.2891C8.63047 10.2891 7.91797 11.0016 7.91797 11.8724C7.91797 12.7432 8.63047 13.4557 9.5013 13.4557Z" 
-          fill="black" 
-          fillOpacity="0.5"
-        />
-      </g>
-      <defs>
-        <clipPath id="clip0_lock">
-          <rect width="19" height="19" fill="white"/>
-        </clipPath>
-      </defs>
-    </svg>
+    <div className="flex flex-col gap-4 w-full">
+      <div className="flex flex-col gap-3">
+        <p className={`font-inter text-xs font-semibold tracking-wider uppercase ${isDark ? "text-white/50" : "text-black/50"}`}>
+          {eyebrow}
+        </p>
+        <h2 className={`font-inter text-2xl sm:text-3xl font-bold leading-[130%] ${isDark ? "text-white" : "text-black"}`}>
+          {heading}
+        </h2>
+      </div>
+      <p className={`font-inter text-base leading-[160%] whitespace-pre-line ${isDark ? "text-white/75" : "text-black/75"}`}>
+        {content}
+      </p>
+    </div>
   );
 }
